@@ -23,7 +23,7 @@ import html_handler
 import globals
 from authorisation import register_authorisation_handlers
 from text_handler import text_to_txt
-from youtube_handler import ytm_handler, y2t_handler, getcookies_handler, cookies_handler
+from youtube_handler import register_youtube_handlers
 from utils import progress_bar
 from vars import API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT, AUTH_USERS, TOTAL_USERS, cookies_file_path
 from vars import api_url, api_token, token_cp, adda_token, photologo, photoyt, photocp, photozip
