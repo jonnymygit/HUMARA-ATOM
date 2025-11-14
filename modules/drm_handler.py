@@ -36,6 +36,7 @@ import zipfile
 import shutil
 import ffmpeg
 
+print("✅ drm_handler.py loaded successfully")
 # =============================================================
 # MAIN DRM HANDLER (LOGIC UNTOUCHED)
 # =============================================================
