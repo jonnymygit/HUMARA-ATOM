@@ -212,6 +212,7 @@ def reset_and_set_commands():
     owner_commands = general_commands + [
         {"command": "broadcast", "description": "📢 Broadcast to All Users"},
         {"command": "broadusers", "description": "👨‍❤️‍👨 All Broadcasting Users"},
+        {"command": "drm", "description": "📥 Text → DRM Video Extractor"},
         {"command": "addauth", "description": "▶️ Add Authorisation"},
         {"command": "rmauth", "description": "⏸️ Remove Authorisation "},
         {"command": "users", "description": "👨‍👨‍👧‍👦 All Premium Users"},
