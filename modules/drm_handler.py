@@ -68,53 +68,115 @@ except Exception as e:
 try:
     from vars import (
         API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT,
-        AUTH_USERS, TOTAL_USERS, cookies_file_path,
-        api_url, api_token, token_cp, adda_token,
-        photologo, photoyt, photocp, photozip
+# ============================================================
+# SAFE & CLEAN IMPORTS FOR DRM_HANDLER.PY
+# ============================================================
+
+import os
+import re
+import sys
+import m3u8
+import json
+import time
+import pytz
+import asyncio
+import requests
+import subprocess
+import urllib
+import urllib.parse
+import yt_dlp
+import tgcrypto
+import cloudscraper
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from base64 import b64encode, b64decode
+from logs import logging
+from bs4 import BeautifulSoup
+import saini as helper
+import globals
+import html_handler
+
+# ------------------------------
+# OPTIONAL MODULES (safe import)
+# ------------------------------
+
+# Authorisation (contains register_authorisation_handlers)
+try:
+    import authorisation
+except Exception as e:
+    print(f"⚠️ authorisation module import failed: {e}")
+    authorisation = None
+
+# Broadcast (contains register_broadcast_handlers)
+try:
+    import broadcast
+except Exception as e:
+    print(f"⚠️ broadcast module import failed: {e}")
+    broadcast = None
+
+# Text handler
+try:
+    from text_handler import text_to_txt
+except Exception as e:
+    print(f"⚠️ text_handler import failed: {e}")
+    text_to_txt = None
+
+# YouTube handler
+try:
+    import youtube_handler
+except Exception as e:
+    print(f"⚠️ youtube_handler import failed: {e}")
+    youtube_handler = None
+
+# Utils
+try:
+    import utils
+except Exception as e:
+    print(f"⚠️ utils import failed: {e}")
+    utils = None
+
+# ------------------------------
+# CRITICAL VARS (must exist)
+# ------------------------------
+try:
+    from vars import (
+        API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT,
+        AUTH_USERS, TOTAL_USERS, cookies_file_path
     )
 except Exception as e:
-    print(f"❌ CRITICAL: vars.py import failed: {e}")
-    raise SystemExit("vars.py missing — bot cannot run!")
+    print(f"❌ CRITICAL: vars import failed: {e}")
+    raise SystemExit("❌ vars.py missing or broken — bot cannot start!")
 
-# aiohttp ClientSession
+# ------------------------------
+# Other imports
+# ------------------------------
 try:
-    from aiohttp import ClientSession
+    from aiohttp import ClientSession, web
 except Exception as e:
     print(f"⚠️ aiohttp import failed: {e}")
     ClientSession = None
-
-# aiohttp web server
-try:
-    from aiohttp import web
-except Exception as e:
-    print(f"⚠️ aiohttp.web import failed: {e}")
     web = None
 
-# subprocess
 try:
     from subprocess import getstatusoutput
 except Exception as e:
     print(f"⚠️ subprocess.getstatusoutput import failed: {e}")
     getstatusoutput = None
 
-# pytube
 try:
     from pytube import YouTube
 except Exception as e:
     print(f"⚠️ pytube import failed: {e}")
     YouTube = None
 
-
-# ========================================================
-# NORMAL IMPORTS (safe to keep below)
-# ========================================================
 import random
 from pyromod import listen
 from pyrogram import Client, filters
 from pyrogram.types import Message, InputMediaPhoto
-from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked, InputUserDeactivated
-from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
-from pyrogram.types.messages_and_media import message
+from pyrogram.errors import (
+    FloodWait, PeerIdInvalid, UserIsBlocked,
+    InputUserDeactivated, StickerEmojiInvalid
+)
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import aiohttp
 import aiofiles
