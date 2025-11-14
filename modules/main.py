@@ -198,6 +198,7 @@ def reset_and_set_commands():
     general_commands = [
         {"command": "start", "description": "✅ Check Alive the Bot"},
         {"command": "stop", "description": "🚫 Stop the ongoing process"},
+        {"command": "drm", "description": "📥 Extract Videos from TXT / DRM Links"},
         {"command": "id", "description": "🆔 Get Your ID"},
         {"command": "info", "description": "ℹ️ Check Your Information"},
         {"command": "cookies", "description": "📁 Upload YT Cookies"},
