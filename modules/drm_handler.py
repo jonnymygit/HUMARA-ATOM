@@ -1,3 +1,7 @@
+# ========================================================
+# CLEAN + SAFE IMPORTS FOR DRM HANDLER
+# ========================================================
+
 import os
 import re
 import sys
@@ -21,162 +25,101 @@ from bs4 import BeautifulSoup
 import saini as helper
 import html_handler
 import globals
-# ========================================================
-# ========================================================
-# SAFE IMPORTS (protected with try/except)
-# ========================================================
 
-# Authorisation
-try:
-    from authorisation import add_auth_user, list_auth_users, remove_auth_user
-except Exception as e:
-    print(f"⚠️ authorisation import failed: {e}")
-    add_auth_user = list_auth_users = remove_auth_user = None
+# --------------------------------------------------------
+# OPTIONAL MODULES (NO CRASH IF MISSING)
+# --------------------------------------------------------
 
-# Broadcast
-try:
-    from broadcast import broadcast_handler, broadusers_handler
-except Exception as e:
-    print(f"⚠️ broadcast import failed: {e}")
-    broadcast_handler = broadusers_handler = None
-
-# Text Handler
-try:
-    from text_handler import text_to_txt
-except Exception as e:
-    print(f"⚠️ text_handler import failed: {e}")
-    text_to_txt = None
-
-# YouTube Handlers
-try:
-    from youtube_handler import (
-        ytm_handler, y2t_handler,
-        getcookies_handler, cookies_handler
-    )
-except Exception as e:
-    print(f"⚠️ youtube_handler import failed: {e}")
-    ytm_handler = y2t_handler = getcookies_handler = cookies_handler = None
-
-# Utils
-try:
-    from utils import progress_bar
-except Exception as e:
-    print(f"⚠️ utils import failed: {e}")
-    progress_bar = None
-
-# Vars - CRITICAL
-try:
-    from vars import (
-        API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT,
-# ============================================================
-# SAFE & CLEAN IMPORTS FOR DRM_HANDLER.PY
-# ============================================================
-
-import os
-import re
-import sys
-import m3u8
-import json
-import time
-import pytz
-import asyncio
-import requests
-import subprocess
-import urllib
-import urllib.parse
-import yt_dlp
-import tgcrypto
-import cloudscraper
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
-from base64 import b64encode, b64decode
-from logs import logging
-from bs4 import BeautifulSoup
-import saini as helper
-import globals
-import html_handler
-
-# ------------------------------
-# OPTIONAL MODULES (safe import)
-# ------------------------------
-
-# Authorisation (contains register_authorisation_handlers)
+# authorisation module
 try:
     import authorisation
 except Exception as e:
-    print(f"⚠️ authorisation module import failed: {e}")
+    print(f"⚠️ authorisation import failed: {e}")
     authorisation = None
 
-# Broadcast (contains register_broadcast_handlers)
+# broadcast module
 try:
     import broadcast
 except Exception as e:
-    print(f"⚠️ broadcast module import failed: {e}")
+    print(f"⚠️ broadcast import failed: {e}")
     broadcast = None
 
-# Text handler
+# text handler
 try:
     from text_handler import text_to_txt
 except Exception as e:
     print(f"⚠️ text_handler import failed: {e}")
     text_to_txt = None
 
-# YouTube handler
+# youtube handler
 try:
     import youtube_handler
 except Exception as e:
     print(f"⚠️ youtube_handler import failed: {e}")
     youtube_handler = None
 
-# Utils
+# utils
 try:
     import utils
 except Exception as e:
     print(f"⚠️ utils import failed: {e}")
     utils = None
 
-# ------------------------------
-# CRITICAL VARS (must exist)
-# ------------------------------
+# --------------------------------------------------------
+# CRITICAL VARS (BOT CANNOT RUN WITHOUT THESE)
+# --------------------------------------------------------
 try:
     from vars import (
         API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT,
         AUTH_USERS, TOTAL_USERS, cookies_file_path
     )
 except Exception as e:
-    print(f"❌ CRITICAL: vars import failed: {e}")
-    raise SystemExit("❌ vars.py missing or broken — bot cannot start!")
+    print(f"❌ CRITICAL: vars.py import failed: {e}")
+    raise SystemExit("vars.py missing — bot cannot run!")
 
-# ------------------------------
-# Other imports
-# ------------------------------
+# --------------------------------------------------------
+# OPTIONAL IMPORTS
+# --------------------------------------------------------
+
+# aiohttp ClientSession
 try:
-    from aiohttp import ClientSession, web
+    from aiohttp import ClientSession
 except Exception as e:
     print(f"⚠️ aiohttp import failed: {e}")
     ClientSession = None
+
+# aiohttp web server
+try:
+    from aiohttp import web
+except Exception as e:
+    print(f"⚠️ aiohttp web import failed: {e}")
     web = None
 
+# subprocess output
 try:
     from subprocess import getstatusoutput
 except Exception as e:
     print(f"⚠️ subprocess.getstatusoutput import failed: {e}")
     getstatusoutput = None
 
+# pytube
 try:
     from pytube import YouTube
 except Exception as e:
     print(f"⚠️ pytube import failed: {e}")
     YouTube = None
 
+# --------------------------------------------------------
+# REMAINING STANDARD IMPORTS
+# --------------------------------------------------------
+
 import random
 from pyromod import listen
 from pyrogram import Client, filters
 from pyrogram.types import Message, InputMediaPhoto
-from pyrogram.errors import (
-    FloodWait, PeerIdInvalid, UserIsBlocked,
-    InputUserDeactivated, StickerEmojiInvalid
-)
+from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked, InputUserDeactivated
+from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
+from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import aiohttp
 import aiofiles
@@ -184,6 +127,9 @@ import zipfile
 import shutil
 import ffmpeg
 
+# ========================================================
+# IMPORT SECTION ENDS 🟢
+# ========================================================
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 
 
