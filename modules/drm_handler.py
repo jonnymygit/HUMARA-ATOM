@@ -21,17 +21,93 @@ from bs4 import BeautifulSoup
 import saini as helper
 import html_handler
 import globals
-from authorisation import add_auth_user, list_auth_users, remove_auth_user
-from broadcast import broadcast_handler, broadusers_handler
-from text_handler import text_to_txt
-from youtube_handler import ytm_handler, y2t_handler, getcookies_handler, cookies_handler
-from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT, AUTH_USERS, TOTAL_USERS, cookies_file_path
-from vars import api_url, api_token, token_cp, adda_token, photologo, photoyt, photocp, photozip
-from aiohttp import ClientSession
-from subprocess import getstatusoutput
-from pytube import YouTube
-from aiohttp import web
+# ========================================================
+# ========================================================
+# SAFE IMPORTS (protected with try/except)
+# ========================================================
+
+# Authorisation
+try:
+    from authorisation import add_auth_user, list_auth_users, remove_auth_user
+except Exception as e:
+    print(f"⚠️ authorisation import failed: {e}")
+    add_auth_user = list_auth_users = remove_auth_user = None
+
+# Broadcast
+try:
+    from broadcast import broadcast_handler, broadusers_handler
+except Exception as e:
+    print(f"⚠️ broadcast import failed: {e}")
+    broadcast_handler = broadusers_handler = None
+
+# Text Handler
+try:
+    from text_handler import text_to_txt
+except Exception as e:
+    print(f"⚠️ text_handler import failed: {e}")
+    text_to_txt = None
+
+# YouTube Handlers
+try:
+    from youtube_handler import (
+        ytm_handler, y2t_handler,
+        getcookies_handler, cookies_handler
+    )
+except Exception as e:
+    print(f"⚠️ youtube_handler import failed: {e}")
+    ytm_handler = y2t_handler = getcookies_handler = cookies_handler = None
+
+# Utils
+try:
+    from utils import progress_bar
+except Exception as e:
+    print(f"⚠️ utils import failed: {e}")
+    progress_bar = None
+
+# Vars - CRITICAL
+try:
+    from vars import (
+        API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT,
+        AUTH_USERS, TOTAL_USERS, cookies_file_path,
+        api_url, api_token, token_cp, adda_token,
+        photologo, photoyt, photocp, photozip
+    )
+except Exception as e:
+    print(f"❌ CRITICAL: vars.py import failed: {e}")
+    raise SystemExit("vars.py missing — bot cannot run!")
+
+# aiohttp ClientSession
+try:
+    from aiohttp import ClientSession
+except Exception as e:
+    print(f"⚠️ aiohttp import failed: {e}")
+    ClientSession = None
+
+# aiohttp web server
+try:
+    from aiohttp import web
+except Exception as e:
+    print(f"⚠️ aiohttp.web import failed: {e}")
+    web = None
+
+# subprocess
+try:
+    from subprocess import getstatusoutput
+except Exception as e:
+    print(f"⚠️ subprocess.getstatusoutput import failed: {e}")
+    getstatusoutput = None
+
+# pytube
+try:
+    from pytube import YouTube
+except Exception as e:
+    print(f"⚠️ pytube import failed: {e}")
+    YouTube = None
+
+
+# ========================================================
+# NORMAL IMPORTS (safe to keep below)
+# ========================================================
 import random
 from pyromod import listen
 from pyrogram import Client, filters
