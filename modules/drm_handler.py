@@ -1,82 +1,108 @@
-========================================================
+# ========================================================
+# CLEAN + SAFE IMPORTS FOR DRM HANDLER
+# ========================================================
 
-CLEAN + SAFE IMPORTS FOR DRM HANDLER
+import os
+import re
+import sys
+import m3u8
+import json
+import time
+import pytz
+import asyncio
+import requests
+import subprocess
+import urllib
+import urllib.parse
+import yt_dlp
+import tgcrypto
+import cloudscraper
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import unpad
+from base64 import b64encode, b64decode
+from logs import logging
+from bs4 import BeautifulSoup
+import saini as helper
+import html_handler
+import globals
 
-========================================================
+# Optional modules (fail safely)
+try:
+    import authorisation
+except Exception as e:
+    print(f"⚠️ authorisation import failed: {e}")
+    authorisation = None
 
-import os import re import sys import m3u8 import json import time import pytz import asyncio import requests import subprocess import urllib import urllib.parse import yt_dlp import tgcrypto import cloudscraper from Crypto.Cipher import AES from Crypto.Util.Padding import unpad from base64 import b64encode, b64decode from logs import logging from bs4 import BeautifulSoup import saini as helper import html_handler import globals
+try:
+    import broadcast
+except Exception as e:
+    print(f"⚠️ broadcast import failed: {e}")
+    broadcast = None
 
---------------------------------------------------------
+try:
+    from text_handler import text_to_txt
+except Exception as e:
+    print(f"⚠️ text_handler import failed: {e}")
+    text_to_txt = None
 
-OPTIONAL MODULES (NO CRASH IF MISSING)
+try:
+    import youtube_handler
+except Exception as e:
+    print(f"⚠️ youtube_handler import failed: {e}")
+    youtube_handler = None
 
---------------------------------------------------------
+try:
+    import utils
+except Exception as e:
+    print(f"⚠️ utils import failed: {e}")
+    utils = None
 
-authorisation module
+# Critical vars (bot cannot run without these)
+try:
+    from vars import (
+        API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT,
+        AUTH_USERS, TOTAL_USERS, cookies_file_path
+    )
+except Exception as e:
+    print(f"❌ CRITICAL: vars.py import failed: {e}")
+    raise SystemExit("vars.py missing — bot cannot run!")
 
-try: import authorisation except Exception as e: print(f"⚠️ authorisation import failed: {e}") authorisation = None
+# Optional imports
+try:
+    from aiohttp import ClientSession, web
+except Exception as e:
+    print(f"⚠️ aiohttp import failed: {e}")
+    ClientSession = None
+    web = None
 
-broadcast module
+try:
+    from subprocess import getstatusoutput
+except Exception as e:
+    print(f"⚠️ subprocess.getstatusoutput import failed: {e}")
+    getstatusoutput = None
 
-try: import broadcast except Exception as e: print(f"⚠️ broadcast import failed: {e}") broadcast = None
+try:
+    from pytube import YouTube
+except Exception as e:
+    print(f"⚠️ pytube import failed: {e}")
+    YouTube = None
 
-text handler
+# Remaining standard imports
+import random
+from pyromod import listen
+from pyrogram import Client, filters
+from pyrogram.types import Message, InputMediaPhoto
+from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked, InputUserDeactivated
+from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
+from pyrogram.types.messages_and_media import message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+import aiohttp
+import aiofiles
+import zipfile
+import shutil
+import ffmpeg
 
-try: from text_handler import text_to_txt except Exception as e: print(f"⚠️ text_handler import failed: {e}") text_to_txt = None
-
-youtube handler
-
-try: import youtube_handler except Exception as e: print(f"⚠️ youtube_handler import failed: {e}") youtube_handler = None
-
-utils
-
-try: import utils except Exception as e: print(f"⚠️ utils import failed: {e}") utils = None
-
---------------------------------------------------------
-
-CRITICAL VARS (BOT CANNOT RUN WITHOUT THESE)
-
---------------------------------------------------------
-
-try: from vars import ( API_ID, API_HASH, BOT_TOKEN, OWNER, CREDIT, AUTH_USERS, TOTAL_USERS, cookies_file_path ) except Exception as e: print(f"❌ CRITICAL: vars.py import failed: {e}") raise SystemExit("vars.py missing — bot cannot run!")
-
---------------------------------------------------------
-
-OPTIONAL IMPORTS
-
---------------------------------------------------------
-
-aiohttp ClientSession
-
-try: from aiohttp import ClientSession except Exception as e: print(f"⚠️ aiohttp import failed: {e}") ClientSession = None
-
-aiohttp web server
-
-try: from aiohttp import web except Exception as e: print(f"⚠️ aiohttp web import failed: {e}") web = None
-
-subprocess output
-
-try: from subprocess import getstatusoutput except Exception as e: print(f"⚠️ subprocess.getstatusoutput import failed: {e}") getstatusoutput = None
-
-pytube
-
-try: from pytube import YouTube except Exception as e: print(f"⚠️ pytube import failed: {e}") YouTube = None
-
---------------------------------------------------------
-
-REMAINING STANDARD IMPORTS
-
---------------------------------------------------------
-
-import random from pyromod import listen from pyrogram import Client, filters from pyrogram.types import Message, InputMediaPhoto from pyrogram.errors import FloodWait, PeerIdInvalid, UserIsBlocked, InputUserDeactivated from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid from pyrogram.types.messages_and_media import message from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup import aiohttp import aiofiles import zipfile import shutil import ffmpeg
-
-========================================================
-
-IMPORT SECTION ENDS 🟢
-
-========================================================
-
-.....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
+# END OF IMPORTS
 
 async def drm_handler(bot: Client, m: Message): globals.processing_request = True globals.cancel_requested = False caption = globals.caption endfilename = globals.endfilename thumb = globals.thumb CR = globals.CR cwtoken = globals.cwtoken cptoken = globals.cptoken pwtoken = globals.pwtoken vidwatermark = globals.vidwatermark raw_text2 = globals.raw_text2 quality = globals.quality res = globals.res topic = globals.topic
 
