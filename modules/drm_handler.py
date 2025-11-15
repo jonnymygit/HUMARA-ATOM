@@ -104,8 +104,25 @@ import ffmpeg
 
 # END OF IMPORTS
 
-async def drm_handler(bot: Client, m: Message): globals.processing_request = True globals.cancel_requested = False caption = globals.caption endfilename = globals.endfilename thumb = globals.thumb CR = globals.CR cwtoken = globals.cwtoken cptoken = globals.cptoken pwtoken = globals.pwtoken vidwatermark = globals.vidwatermark raw_text2 = globals.raw_text2 quality = globals.quality res = globals.res topic = globals.topic
+async def drm_handler(bot: Client, m: Message):
 
+    # reset states
+    globals.processing_request = True
+    globals.cancel_requested = False
+
+    # load global vars
+    caption       = globals.caption
+    endfilename   = globals.endfilename
+    thumb         = globals.thumb
+    CR            = globals.CR
+    cwtoken       = globals.cwtoken
+    cptoken       = globals.cptoken
+    pwtoken       = globals.pwtoken
+    vidwatermark  = globals.vidwatermark
+    raw_text2     = globals.raw_text2
+    quality       = globals.quality
+    res           = globals.res
+    topic         = globals.topic
 user_id = m.from_user.id
 if m.document and m.document.file_name.endswith('.txt'):
     x = await m.download()
